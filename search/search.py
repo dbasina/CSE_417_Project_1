@@ -87,30 +87,15 @@ def depthFirstSearch(problem):
     print "Start's successors:", problem.getSuccessors(problem.getStartState())
     """
     "*** YOUR CODE HERE ***"
-    # create a queue data structure to store the actions.
-    #base case for recursion
-    print "Problem:", problem
-    successorStates = problem.getSuccessors(problem.getStartState());
-    print "Start's successors:", successorStates[0]
-    return;
-    """if (problem.isGoalState(problem.getStartState()))
-    {
-        print "Goal:", problem.getStartState
-        return problem
-    }
-
-    #base case check fails
-    else
-    {
-        # get successors of a state
-        # Check for terminal node
-        list successorStates = problem.getSuccessors();
-        if (successorStaes.length() == 0)
-        {
-
-        }
-
-    }"""
+    # extract start coordinates
+    # define recursivePathGenerator that takes the coordinates tuple
+    # generate a path list in the recursion
+    # base case: check if coordinate is isGoalState
+    # else create for i that iterates over s.getSuccessors
+    # add the action of the i into our return list
+    # call the recursivePathGenerator from for loops on i's coordinates.
+    # return list from recursion
+    # return list from depthFirstSearch
     util.raiseNotDefined()
 
 def breadthFirstSearch(problem):
