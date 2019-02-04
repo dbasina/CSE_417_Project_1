@@ -4,7 +4,7 @@
 # educational purposes provided that (1) you do not distribute or publish
 # solutions, (2) you retain this notice, and (3) you provide clear
 # attribution to UC Berkeley, including a link to http://ai.berkeley.edu.
-# 
+#
 # Attribution Information: The Pacman AI projects were developed at UC Berkeley.
 # The core projects and autograders were primarily created by John DeNero
 # (denero@cs.berkeley.edu) and Dan Klein (klein@cs.berkeley.edu).
@@ -87,6 +87,30 @@ def depthFirstSearch(problem):
     print "Start's successors:", problem.getSuccessors(problem.getStartState())
     """
     "*** YOUR CODE HERE ***"
+    # create a queue data structure to store the actions.
+    #base case for recursion
+    print "Problem:", problem
+    successorStates = problem.getSuccessors(problem.getStartState());
+    print "Start's successors:", successorStates[0]
+    return;
+    """if (problem.isGoalState(problem.getStartState()))
+    {
+        print "Goal:", problem.getStartState
+        return problem
+    }
+
+    #base case check fails
+    else
+    {
+        # get successors of a state
+        # Check for terminal node
+        list successorStates = problem.getSuccessors();
+        if (successorStaes.length() == 0)
+        {
+
+        }
+
+    }"""
     util.raiseNotDefined()
 
 def breadthFirstSearch(problem):
