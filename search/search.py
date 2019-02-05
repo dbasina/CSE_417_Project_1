@@ -87,7 +87,93 @@ def depthFirstSearch(problem):
     print "Start's successors:", problem.getSuccessors(problem.getStartState())
     """
     "*** YOUR CODE HERE ***"
-    # extract start coordinates
+    # import directions. If not, program gets crazy.
+    from game import Directions
+
+    # Initialize variables that are used for recursion
+    start = problem.getStartState();
+    visitedstates=[];
+    actionStack = util.Stack();
+    foundGoalState= [False];
+
+    #This method's name is self explanatory
+    # the recursion assumes that the node that its currently at is the start state.
+    # we are creating sub problems from the main problem until we reach the case where
+    # start = goal . Then, we retrace the path from goal to start and collect the directions
+    # simultaneously while retracing back.
+    # Variables breakdown:
+    # start = starting node
+    # visitedstates = a list to keep track of visited states
+    # actionStack= stack that holds the actions
+    # foundGoalState = a list that contains false until we reach goal state and then append a true to it
+
+    def recursivePathGenerator(start,visitedstates,actionStack,foundGoalState,problem):
+
+        import util as util
+
+        #Print Check
+        print "State: ",start
+        print "successors:",problem.getSuccessors(start)
+        print "Visited:",visitedstates
+        print "found:", foundGoalState
+        print "\n"
+
+        # add current node to visited states
+        visitedstates.append(start);
+
+        # Check for goal state
+        if (problem.isGoalState(start)):
+            print start
+            foundGoalState.append(True);
+            print foundGoalState
+            return
+
+        # Recursive step. Get successors and visit depth first.
+        else:
+
+            nodeSuccessors = problem.getSuccessors(start);
+            numberOfSuccessors = len(nodeSuccessors);
+            popCounter=0;
+
+            # Check if all the successors have been visited previously
+            for i in nodeSuccessors:
+                if (i[0] in visitedstates):
+                    popCounter = popCounter+1;
+
+            # if some nodes still need to be visited, search for goal node recursively.
+            if(popCounter != numberOfSuccessors):
+                for i in nodeSuccessors:
+
+                    if(i[0] not in visitedstates):
+
+                        recursivePathGenerator(i[0],visitedstates,actionStack,foundGoalState,problem)
+                        if (foundGoalState[len(foundGoalState)-1]):
+                            print i[1]
+                            actionStack.push(i[1]);
+                            print "Goal Found, Retracing..."
+                            return;
+            # If popcounter == number of successors, we return since we didn't find goal node in our path.
+            else:
+                return;
+
+
+    # Call our recursive function
+    recursivePathGenerator(start,visitedstates,actionStack,foundGoalState,problem);
+
+    #initialize return value
+    retval =[]
+
+    #While stack is not empty, extract and append elements from stack to return value.
+    while (not actionStack.isEmpty()):
+        retval.append(actionStack.pop());
+    # Print Check
+    print retval
+
+    #Return
+    return retval;
+
+
+
     # define recursivePathGenerator that takes the coordinates tuple
     # generate a path list in the recursion
     # base case: check if coordinate is isGoalState
