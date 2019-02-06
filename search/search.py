@@ -112,20 +112,20 @@ def depthFirstSearch(problem):
         import util as util
 
         #Print Check
-        print "State: ",start
-        print "successors:",problem.getSuccessors(start)
-        print "Visited:",visitedstates
-        print "found:", foundGoalState
-        print "\n"
+        #print "State: ",start
+        #print "successors:",problem.getSuccessors(start)
+        #print "Visited:",visitedstates
+        #print "found:", foundGoalState
+        #print "\n"
 
         # add current node to visited states
         visitedstates.append(start);
 
         # Check for goal state
         if (problem.isGoalState(start)):
-            print start
+            #print start
             foundGoalState.append(True);
-            print foundGoalState
+            #print foundGoalState
             return
 
         # Recursive step. Get successors and visit depth first.
@@ -148,9 +148,9 @@ def depthFirstSearch(problem):
 
                         recursivePathGenerator(i[0],visitedstates,actionStack,foundGoalState,problem)
                         if (foundGoalState[len(foundGoalState)-1]):
-                            print i[1]
+                            #print i[1]
                             actionStack.push(i[1]);
-                            print "Goal Found, Retracing..."
+                            #print "Goal Found, Retracing..."
                             return;
             # If popcounter == number of successors, we return since we didn't find goal node in our path.
             else:
