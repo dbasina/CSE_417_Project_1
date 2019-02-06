@@ -82,9 +82,9 @@ def depthFirstSearch(problem):
     To get started, you might want to try some of these simple commands to
     understand the search problem that is being passed in:
 
-    print "Start:", problem.getStartState()
-    print "Is the start a goal?", problem.isGoalState(problem.getStartState())
-    print "Start's successors:", problem.getSuccessors(problem.getStartState())
+    #print "Start:", problem.getStartState()
+    #print "Is the start a goal?", problem.isGoalState(problem.getStartState())
+    #print "Start's successors:", problem.getSuccessors(problem.getStartState())
     """
     "*** YOUR CODE HERE ***"
     # import directions. If not, program gets crazy.
@@ -111,21 +111,21 @@ def depthFirstSearch(problem):
 
         import util as util
 
-        #Print Check
-        #print "State: ",start
-        #print "successors:",problem.getSuccessors(start)
-        #print "Visited:",visitedstates
-        #print "found:", foundGoalState
-        #print "\n"
+        ##print Check
+        ##print "State: ",start
+        ##print "successors:",problem.getSuccessors(start)
+        ##print "Visited:",visitedstates
+        ##print "found:", foundGoalState
+        ##print "\n"
 
         # add current node to visited states
         visitedstates.append(start);
 
         # Check for goal state
         if (problem.isGoalState(start)):
-            #print start
+            ##print start
             foundGoalState.append(True);
-            #print foundGoalState
+            ##print foundGoalState
             return
 
         # Recursive step. Get successors and visit depth first.
@@ -148,16 +148,16 @@ def depthFirstSearch(problem):
 
                         recursivePathGenerator(i[0],visitedstates,actionStack,foundGoalState,problem)
                         if (foundGoalState[len(foundGoalState)-1]):
-                            #print i[1]
+                            ##print i[1]
                             actionStack.push(i[1]);
-                            #print "Goal Found, Retracing..."
+                            ##print "Goal Found, Retracing..."
                             return;
             # If popcounter == number of successors, we return since we didn't find goal node in our path.
             else:
                 return;
 
 
-    # Call our recursive function
+    # Call the recursive function
     recursivePathGenerator(start,visitedstates,actionStack,foundGoalState,problem);
 
     #initialize return value
@@ -166,28 +166,103 @@ def depthFirstSearch(problem):
     #While stack is not empty, extract and append elements from stack to return value.
     while (not actionStack.isEmpty()):
         retval.append(actionStack.pop());
-    # Print Check
-    print retval
+    # #print Check
+    #print retval
 
     #Return
     return retval;
 
-
-
-    # define recursivePathGenerator that takes the coordinates tuple
-    # generate a path list in the recursion
-    # base case: check if coordinate is isGoalState
-    # else create for i that iterates over s.getSuccessors
-    # add the action of the i into our return list
-    # call the recursivePathGenerator from for loops on i's coordinates.
-    # return list from recursion
-    # return list from depthFirstSearch
-    util.raiseNotDefined()
-
 def breadthFirstSearch(problem):
     """Search the shallowest nodes in the search tree first."""
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+
+    """ Algorithm:
+        We use the method iterativeGoalGenerator to get to the goal node
+        using breadthFirstSearch. In the process we are also creating a list
+        of tuples of (parent,child). parent:(x,y) child: ((x,y),direction,cost)
+
+        We assign each successor node it's parent and store it in the parentChild[]
+        list. We need this list to backtrack and generate the path to goal nodeself.
+
+        assignParent(parent,child): creates the tuple and adds to the list.
+
+        returnParent(child): traverses the list and returns (parent,direction)
+
+        actionStackGenerator: generates the list of actions and stores in actionStack
+
+        iterativeGoalGenerator: finds the goal iteratively using breadthFirstSearch 
+        """
+    def assignParent(parent,child):
+        relationship =(parent,child);
+        parentChild.append(relationship);
+
+    def returnParent(child):
+        for i in parentChild:
+            parentLocation = i[0]
+            childNode =i[1];
+            childLocation = childNode[0];
+            if (childLocation == child):
+                return (parentLocation,childNode[1]);
+
+    def actionStackGenerator(actionStack,start,goal):
+        retval = returnParent(goal);
+        while (retval[0] != start):
+            actionStack.push(retval[1]);
+            retval = returnParent(retval[0]);
+        actionStack.push(retval[1]);
+
+    def iterativeGoalGenerator(problem,visitedStates,nodeQueue):
+        # iterates till we find goal.
+        # Each node has its parent's location sparing the start state that helps us backtrack.
+        retval =(0,0);
+        while(not nodeQueue.isEmpty()):
+            #Pop node from queue and add to visited list.
+            node = nodeQueue.pop();
+
+            if (node not in visitedStates):
+                #Add node to visitedstates
+                visitedStates.append(node);
+
+                #check if node is goal node.
+                if (problem.isGoalState(node)):
+                    retval = node;
+                    #print "Goal state found breaking"
+                    #print node;
+                    return node;
+                #Add successor nodes to queue.
+                else:
+                    #print "node not found yet"
+                    # Get the successors of the node.
+                    successors = problem.getSuccessors(node);
+                    for i in successors:
+                        if (i[0] not in visitedStates):
+                            assignParent(node,i);
+                            nodeQueue.push(i[0]);
+
+
+
+    # Start Program
+    start = problem.getStartState();
+    visitedStates=[];
+    nodeQueue = util.Queue();
+    actionStack = util.Stack();
+    foundGoalState= [False];
+    nodeQueue.push(start);
+    parentChild=[]
+    retval = [];
+    goal = iterativeGoalGenerator(problem,visitedStates,nodeQueue)
+    actionStackGenerator(actionStack,start,goal);
+
+    while(not actionStack.isEmpty()):
+        l = actionStack.pop();
+        retval.append(l);
+
+    return retval;
+
+
+    util.raiseNotDefined();
+
+
 
 def uniformCostSearch(problem):
     """Search the node of least total cost first."""
