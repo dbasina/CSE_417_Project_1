@@ -259,9 +259,6 @@ def breadthFirstSearch(problem):
 
     return retval;
 
-
-    util.raiseNotDefined();
-
 def uniformCostSearch(problem):
     """Search the node of least total cost first."""
     "*** YOUR CODE HERE ***"
@@ -309,7 +306,7 @@ def aStarSearch(problem, heuristic= nullHeuristic):
                                               we sort this list and pop the first element out and add it to the node queue which then gets popped for the next iteration.
                              Note: In the graph search version of the algorithm, we do not expand nodes that have already been visited even though they posses the least value of
                                    the cost function. Therefore, we need to make sure that visitedStates keeps track of only the locations. This is because the heuristicList will still pick up
-                                   nodes that have been visited. We handle these nodes in the outermost else and prevent reprocessing of the nodes. 
+                                   nodes that have been visited. We handle these nodes in the outermost else and prevent reprocessing of the nodes.
         """
     def assignParent(parent,child):
         relationship =(parent,child);
@@ -409,7 +406,7 @@ def aStarSearch(problem, heuristic= nullHeuristic):
         l = actionStack.pop();
         retval.append(l);
     return retval;
-    util.raiseNotDefined()
+
 
 
 # Abbreviations
