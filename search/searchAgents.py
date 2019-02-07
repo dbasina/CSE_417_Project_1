@@ -478,6 +478,26 @@ class ClosestDotSearchAgent(SearchAgent):
         Returns a path (a list of actions) to the closest dot, starting from
         gameState.
         """
+        """
+        Example of why repeatedly going to shortest path to food wont result in
+        shortest path to eat all food.
+
+                |---------------|
+                |fffffffffffffff|
+                |fffffffffffffff|
+                |fffffffffffffff|
+                |fffffffffffffff|
+                |               |
+                -------|P |------
+                       | |
+        P is pacman and f is food. In this box type strucute, optimal way to eat food
+        is to start from either side and cover the distance = area of the box.
+
+        But in using the closest path to food, we end up traversing more than the area of the box.
+        We start eating from the center but we are uncertain to immediately go to either side. If we eat from the center of the
+        bottom most row and move to the sides, then we may have hope of having an optimal solution but this is not always the case.
+        The deeper we get on the central line and move to either left or right, the more suboptimal our solution becomes. 
+        """
         # Here are some useful elements of the startState
         startPosition = gameState.getPacmanPosition()
         food = gameState.getFood()
