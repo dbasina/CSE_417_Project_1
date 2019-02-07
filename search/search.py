@@ -190,7 +190,7 @@ def breadthFirstSearch(problem):
 
         actionStackGenerator: generates the list of actions and stores in actionStack
 
-        iterativeGoalGenerator: finds the goal iteratively using breadthFirstSearch 
+        iterativeGoalGenerator: finds the goal iteratively using breadthFirstSearch
         """
     def assignParent(parent,child):
         relationship =(parent,child);
@@ -262,8 +262,6 @@ def breadthFirstSearch(problem):
 
     util.raiseNotDefined();
 
-
-
 def uniformCostSearch(problem):
     """Search the node of least total cost first."""
     "*** YOUR CODE HERE ***"
@@ -276,9 +274,141 @@ def nullHeuristic(state, problem=None):
     """
     return 0
 
-def aStarSearch(problem, heuristic=nullHeuristic):
+def aStarSearch(problem, heuristic= nullHeuristic):
     """Search the node that has the lowest combined cost and heuristic first."""
     "*** YOUR CODE HERE ***"
+    """Algorithm:
+        We use a similiar structure to what we used in breadthFirstSearch.
+        We maintain a parent child list. But unlike in breadthFirstSearch where we
+        only used the node locations, we need to store the node tuple that is returned
+        from calling getSuccessors method. This is the key to running A* search since it
+        provides every node its uniqueness. Which helps us in backtracking with the shortest path.
+
+        The assumptions of A* search finding the shortest path plays a crucial role in the workings of the algorithm.
+        Using this peice of information, we can safely backtrack to the node that called it all the way back to the start.
+        It is in this backtracking process, saving the entire node information as opposed to saving only the location comes into play.
+
+        assignParent: This method assigns the parent of a child node right after the getSuccessors method is called. A tuple of this data is created
+                      and stored in the parentChild list that we later use for backtracking the path and compuing costs to nodes.
+
+        returnParent: This method returns the parent of a child node.
+
+        returnCost  : This method returns the 1 step cost to move to the child node from its parent node. Since two nodes can have the same children,
+                      we need this method to first identify its parent before computing the cost to the child.
+
+        computeCostToNode: This method computes the minimum cost for reaching a node in the tree by iteratively calling returnCost on parentNode of the goal node,
+                            until we reach start.
+
+        actionStackGenerator: This method is similar to computeCostToNode in that it iteratively calls the parentNode to the child node while simultaneously building the
+                              actionStack that we will use to generate the return list.
+
+        aStarGoalGenerator:  This method uses a* search to find the goal node, while simultaneously building the following datastructures
+                             - nodeQueue: Used to set up nodes that will get popped and either ignored or expanded based on whether they have already been visited.
+                             - visitedStates: Keeps track of only the node locations that have been visited.
+                             - heuristicList: This list keeps track of new nodes that have been expanded along with the value of their cost functions.
+                                              we sort this list and pop the first element out and add it to the node queue which then gets popped for the next iteration.
+                             Note: In the graph search version of the algorithm, we do not expand nodes that have already been visited even though they posses the least value of
+                                   the cost function. Therefore, we need to make sure that visitedStates keeps track of only the locations. This is because the heuristicList will still pick up
+                                   nodes that have been visited. We handle these nodes in the outermost else and prevent reprocessing of the nodes. 
+        """
+    def assignParent(parent,child):
+        relationship =(parent,child);
+        parentChild.append(relationship);
+
+    def returnParent(child):
+        for i in parentChild:
+            parentNode = i[0]
+            childNode =i[1];
+            if (childNode == child):
+                return (parentNode,childNode[1]);
+
+    def returnCost(child):
+
+        for i in parentChild:
+            parentNode = i[0]
+            childNode =i[1];
+            if (childNode == child):
+                return (parentNode,childNode[2]);
+
+    def actionStackGenerator(actionStack,start,goal):
+        retval = returnParent(goal);
+        while (retval[0] != start):
+            actionStack.push(retval[1]);
+            retval = returnParent(retval[0]);
+        actionStack.push(retval[1]);
+
+    def computeCostToNode(start,goal):
+        sum=0;
+        retval = returnCost(goal);
+        while (retval[0] != start):
+            sum = sum+retval[1];
+            retval = returnCost(retval[0]);
+        sum=sum+retval[1];
+        return sum;
+
+
+    def aStarGoalGenerator(nodeQueue,visitedStates,problem,heuristic,start):
+        # iterates till we find goal.
+        # Each node has its parent's location sparing the start state that helps us backtrack.
+        retval =(0,0);
+        heuristicList = [];
+        while (not nodeQueue.isEmpty()):
+            #Pop node from queue and add to visited list.
+            node = nodeQueue.pop();
+
+            if (node[0] not in visitedStates):
+                #Add node to visitedstates
+                visitedStates.append(node[0]);
+
+                #check if node is goal node.
+                if (problem.isGoalState(node[0])):
+                    retval = node;
+                    return node;
+                #Add successor nodes to queue.
+                else:
+                    #print "node not found yet"
+                    # Get the successors of the node.
+
+                    successors = problem.getSuccessors(node[0]);
+                    for i in successors:
+                        if (i[0] not in visitedStates):
+                            assignParent(node,i);
+                            #print parentChild
+                            heuristicValue = heuristic(i[0],problem);
+                            costValue = computeCostToNode(start,i);
+                            fn = costValue+heuristicValue;
+                            valueTuple = (i,fn);
+                            #if (heuristicTuple not in heuristicList):
+                            heuristicList.append(valueTuple);
+
+
+                    heuristicList.sort(key=lambda tup: tup[1]);
+                    l = heuristicList.pop(0);
+                    nodeQueue.push(l[0]);
+            else:
+                i = heuristicList.pop(0);
+                nodeQueue.push(i[0]);
+
+    # Start Programs
+    startLocation = problem.getStartState();
+    start=(startLocation,0,0);
+    visitedStates=[];
+    nodeQueue = util.Queue();
+    actionStack = util.Stack();
+    foundGoalState= [False];
+    nodeQueue.push(start);
+    parentChild=[];
+    retval = [];
+    goal = aStarGoalGenerator(nodeQueue,visitedStates,problem,heuristic,start)
+    while (not actionStack.isEmpty()):
+        l = actionStack.pop();
+        print l;
+
+    actionStackGenerator(actionStack,start,goal);
+    while (not actionStack.isEmpty()):
+        l = actionStack.pop();
+        retval.append(l);
+    return retval;
     util.raiseNotDefined()
 
 
